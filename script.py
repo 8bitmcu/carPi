@@ -1,4 +1,5 @@
 import dbus
+import os, sys
 import gobject
 
 class DeviceAddedListener:
@@ -24,7 +25,8 @@ class DeviceAddedListener:
         if device.QueryCapability("volume"):
             return self.do_something(device)
 
-            
+
+
     def do_something(self, volume):
 
         import time
@@ -55,16 +57,15 @@ class DeviceAddedListener:
         self.showMp3(mount_point)
 
 
+    def scanSystem(self, path):
+        for dir in os.listdir(path):
+            showMp3(dir)
 
-    def showMp3(self, path):
-        import os, sys
 
-        print path
+def showMp3(self, path):
+        for file in os.listdir(path + "/"):
+            #     print file
 
-        dirs = os.listdir(path + "/")
-
-        for file in dirs:
-            print file
 
 
 if __name__ == '__main__':
