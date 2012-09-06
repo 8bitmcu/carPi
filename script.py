@@ -24,7 +24,14 @@ class DeviceAddedListener:
         if device.QueryCapability("volume"):
             return self.do_something(device)
 
+            
     def do_something(self, volume):
+
+        import time
+
+        while not volume.GetProperty("volume.is_mounted"):
+            time.sleep(1)
+
         device_file = volume.GetProperty("block.device")
         label = volume.GetProperty("volume.label")
         fstype = volume.GetProperty("volume.fstype")
@@ -45,6 +52,20 @@ class DeviceAddedListener:
         else:
             print "  not mounted"
         print "  size: %s (%.2fGB)" % (size, float(size) / 1024**3)
+        self.showMp3(mount_point)
+
+
+
+    def showMp3(self, path):
+        import os, sys
+
+        print path
+
+        dirs = os.listdir(path + "/")
+
+        for file in dirs:
+            print file
+
 
 if __name__ == '__main__':
     from dbus.mainloop.glib import DBusGMainLoop
