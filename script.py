@@ -8,21 +8,21 @@ class DeviceAddedListener:
 
 	#constructor
 	def __init__(self):
-		#set-up interrupt on USB device being plugged (call self._filter)
+		#set-up interrupt on USB device being plugged
 		self.bus = dbus.SystemBus()
 		self.hal_manager_obj = self.bus.get_object("org.freedesktop.Hal", "/org/freedesktop/Hal/Manager")
 		self.hal_manager = dbus.Interface(self.hal_manager_obj, "org.freedesktop.Hal.Manager")
-		self.hal_manager.connect_to_signal("DeviceAdded", self.usbInterrupt)
+		self.hal_manager.connect_to_signal("DeviceAdded", self.usbPlugged)
 		
 		#check for devices that are already plugged in
 		self.ud_manager_obj = self.bus.get_object("org.freedesktop.UDisks", "/org/freedesktop/UDisks")
 		self.ud_manager = dbus.Interface(self.ud_manager_obj, 'org.freedesktop.UDisks')
 		
 		for dev in self.ud_manager.EnumerateDevices():
-			self.usbPlugged(dev)
+			self.usbMounted(dev)
 
-	#interrupt when USB device is called
-	def usbInterrupt(self, udi):
+	#interrupt when USB device is plugged
+	def usbPlugged(self, udi):
 		device_obj = self.bus.get_object("org.freedesktop.Hal", udi)
 		device = dbus.Interface(device_obj, "org.freedesktop.Hal.Device")
 
@@ -35,7 +35,7 @@ class DeviceAddedListener:
 
 
 	#scan mounted devices	
-	def usbPlugged(self, udi):
+	def usbMounted(self, udi):
 		device_obj = self.bus.get_object("org.freedesktop.UDisks", udi)
 		device = dbus.Interface(device_obj, dbus.PROPERTIES_IFACE)
 		
